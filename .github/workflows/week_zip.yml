@@ -1,0 +1,25 @@
+name: Weekly Zip Project
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # This cron job runs at midnight on Sundays
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create zip file
+        run: |
+          WEEK=$(date +%U)  # Get the week number (01-53)
+          ZIP_FILE="project-week-${WEEK}.zip"
+          zip -r $ZIP_FILE . # Creates a zip of the entire project directory
+
+      - name: Upload zip file
+        uses: actions/upload-artifact@v2
+        with:
+          name: project-week-${WEEK}.zip
+          path: project-week-${WEEK}.zip
