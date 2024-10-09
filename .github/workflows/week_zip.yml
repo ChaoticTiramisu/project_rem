@@ -3,6 +3,7 @@ name: Weekly Zip Project
 on:
   schedule:
     - cron: '0 0 * * 0' # This cron job runs at midnight on Sundays
+  workflow_dispatch: # This allows manual triggering of the workflow
 
 jobs:
   zip:
