@@ -13,14 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set school year week number
+      - name: Set school year week number for the previous week
         run: |
           SCHOOL_YEAR_START="2024-09-01" # Set the start of the school year
           CURRENT_DATE=$(date +%Y-%m-%d)
           # Calculate the difference in days between the current date and school year start
           DAYS_DIFF=$(( ($(date -d "$CURRENT_DATE" +%s) - $(date -d "$SCHOOL_YEAR_START" +%s)) / 86400 ))
-          SCHOOL_YEAR_WEEK=$(( ($DAYS_DIFF / 7) + 1 )) # Get the number of weeks passed since the start of the school year
-          echo "SCHOOL_YEAR_WEEK=$SCHOOL_YEAR_WEEK" >> $GITHUB_ENV # Export as an environment variable
+          SCHOOL_YEAR_WEEK=$(( ($DAYS_DIFF / 7) )) # Subtract 1 week to reflect the previous week
+          echo "SCHOOL_YEAR_WEEK=$SCHOOL_YEAR_WEEK" >> $GITHUB_ENV # Export as environment variable
 
       - name: Create zip file
         run: |
