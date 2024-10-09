@@ -2,8 +2,8 @@ name: Weekly Zip Project
 
 on:
   schedule:
-    - cron: '0 0 * * 0' # This cron job runs at midnight on Sundays
-  workflow_dispatch: # Allows manual triggering
+    - cron: '0 0 * * 0' # Run at midnight every Sunday
+  workflow_dispatch: # Allow manual trigger
 
 jobs:
   zip:
@@ -13,16 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set WEEK variable
-        run: echo "WEEK=$(date +%U)" >> $GITHUB_ENV # Export the week number as an environment variable
+      - name: Set school year week number
+        run: |
+          SCHOOL_YEAR_START="2024-09-01" # Set the start of the school year
+          CURRENT_DATE=$(date +%Y-%m-%d)
+          # Calculate the difference in days between the current date and school year start
+          DAYS_DIFF=$(( ($(date -d "$CURRENT_DATE" +%s) - $(date -d "$SCHOOL_YEAR_START" +%s)) / 86400 ))
+          SCHOOL_YEAR_WEEK=$(( ($DAYS_DIFF / 7) + 1 )) # Get the number of weeks passed since the start of the school year
+          echo "SCHOOL_YEAR_WEEK=$SCHOOL_YEAR_WEEK" >> $GITHUB_ENV # Export as an environment variable
 
       - name: Create zip file
         run: |
-          ZIP_FILE="project-week-${WEEK}.zip"
-          zip -r $ZIP_FILE . # Create a zip of the entire project directory
+          ZIP_FILE="project-school-year-week-${SCHOOL_YEAR_WEEK}.zip"
+          zip -r $ZIP_FILE . # Create the zip file
 
       - name: Upload zip file
         uses: actions/upload-artifact@v3
         with:
-          name: project-week-${{ env.WEEK }}.zip # Use the environment variable
-          path: project-week-${{ env.WEEK }}.zip # Use the environment variable for the file path
+          name: project-school-year-week-${{ env.SCHOOL_YEAR_WEEK }}.zip
+          path: project-school-year-week-${{ env.SCHOOL_YEAR_WEEK }}.zip
