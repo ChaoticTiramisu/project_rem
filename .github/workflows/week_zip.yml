@@ -20,7 +20,7 @@ jobs:
           zip -r $ZIP_FILE . # Creates a zip of the entire project directory
 
       - name: Upload zip file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3 # Updated to version 3
         with:
           name: project-week-${WEEK}.zip
           path: project-week-${WEEK}.zip
