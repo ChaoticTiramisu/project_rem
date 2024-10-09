@@ -3,7 +3,7 @@ name: Weekly Zip Project
 on:
   schedule:
     - cron: '0 0 * * 0' # This cron job runs at midnight on Sundays
-  workflow_dispatch: # This allows manual triggering of the workflow
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   zip:
@@ -13,14 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set WEEK variable
+        run: echo "WEEK=$(date +%U)" >> $GITHUB_ENV # Export the week number as an environment variable
+
       - name: Create zip file
         run: |
-          WEEK=$(date +%U)  # Get the week number (01-53)
           ZIP_FILE="project-week-${WEEK}.zip"
-          zip -r $ZIP_FILE . # Creates a zip of the entire project directory
+          zip -r $ZIP_FILE . # Create a zip of the entire project directory
 
       - name: Upload zip file
-        uses: actions/upload-artifact@v3 # Updated to version 3
+        uses: actions/upload-artifact@v3
         with:
-          name: project-week-${WEEK}.zip
-          path: project-week-${WEEK}.zip
+          name: project-week-${{ env.WEEK }}.zip # Use the environment variable
+          path: project-week-${{ env.WEEK }}.zip # Use the environment variable for the file path
